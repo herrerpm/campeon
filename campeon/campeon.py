@@ -6,11 +6,6 @@ from dbfread import DBF
 # Cambiar directorio por carpeta con dbf
 directorio = 'C:\\Users\\mherr\\Desktop\\CAMP6W\\OBRAS\\CAJONDEP'
 
-
-def convertir(nombre):
-    """ Aqui se pone la explicacion"""
-    # Convertir toma los datos del dbf seleccionado y los convierte a un data frame
-    # para exportarlo a una carpeta con los csv
 def dbf_to_csv(dbf_table_pth):
     carpeta = "csv"
     if not os.path.exists(carpeta):
