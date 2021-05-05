@@ -1,5 +1,6 @@
 import os
-
+import sys
+import csv
 from dbfread import DBF
 
 # Cambiar directorio por carpeta con dbf
@@ -10,11 +11,18 @@ def convertir(nombre):
     """ Aqui se pone la explicacion"""
     # Convertir toma los datos del dbf seleccionado y los convierte a un data frame
     # para exportarlo a una carpeta con los csv
+def dbf_to_csv(dbf_table_pth):
     carpeta = "csv"
-    dbf = DBF(str(nombre), encoding='1252')
     if not os.path.exists(carpeta):
         os.makedirs(carpeta)
-
+    csv_fn = directorio + "\\" + carpeta + "\\" + dbf_table_pth[:-4] + ".csv"
+    table = DBF(dbf_table_pth, encoding="1252")
+    with open(csv_fn, 'w', newline = '') as f:
+        writer = csv.writer(f)
+        writer.writerow(table.field_names)
+        for record in table:
+            writer.writerow(list(record.values()))
+    return csv_fn
 # archivos toma una lista de los archivos que estan en el directorio de la obra
 # y si su terminación es dbf los convierte a dataframe
 def archivos():
@@ -32,7 +40,7 @@ def main():
     os.chdir(directorio)
     lista = archivos()
     for i in range(0,len(lista)):
-        convertir(lista[i])
+        dbf_to_csv(lista[i])
 
 
 if __name__ == "__main__":
