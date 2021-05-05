@@ -11,7 +11,7 @@ def dbf_to_csv(dbf_table_pth):
     if not os.path.exists(carpeta):
         os.makedirs(carpeta)
     csv_fn = directorio + "\\" + carpeta + "\\" + dbf_table_pth[:-4] + ".csv"
-    table = DBF(dbf_table_pth, encoding="1252")
+    table = DBF(dbf_table_pth, encoding="850")
     with open(csv_fn, 'w', newline = '') as f:
         writer = csv.writer(f)
         writer.writerow(table.field_names)
