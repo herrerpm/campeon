@@ -1,17 +1,14 @@
 import os
-import sys
 import csv
 from dbfread import DBF
-
 # Cambiar directorio por carpeta con dbf
-directorio = 'C:\\Users\\mherr\\Desktop\\CAMP6W\\OBRAS\\CAJONDEP'
-
+directorio = 'C:\\Users\\mherr\\Desktop\\CAMP6W\\OBRAS\\PRECIOSU'
 def dbf_to_csv(dbf_table_pth):
     carpeta = "csv"
     if not os.path.exists(carpeta):
         os.makedirs(carpeta)
     csv_fn = directorio + "\\" + carpeta + "\\" + dbf_table_pth[:-4] + ".csv"
-    table = DBF(dbf_table_pth, encoding="850")
+    table = DBF(dbf_table_pth, encoding="850", ignore_missing_memofile="true")
     with open(csv_fn, 'w', newline = '') as f:
         writer = csv.writer(f)
         writer.writerow(table.field_names)
@@ -29,14 +26,15 @@ def archivos():
         else:
             pass
     return lista
-
 #main conecta los archivos del directorio a la función convertir
 def main():
     os.chdir(directorio)
     lista = archivos()
     for i in range(0,len(lista)):
-        dbf_to_csv(lista[i])
-
-
+        try:
+            dbf_to_csv(lista[i])
+            break
+        except ValueError:
+            break
 if __name__ == "__main__":
     main()
