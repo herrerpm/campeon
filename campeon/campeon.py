@@ -33,8 +33,7 @@ def main():
     for i in range(0,len(lista)):
         try:
             dbf_to_csv(lista[i])
-            break
         except ValueError:
-            break
+            pass
 if __name__ == "__main__":
     main()
