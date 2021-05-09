@@ -38,7 +38,6 @@ def excel(archivos, path):
 def main():
     path = PureWindowsPath('C:\\Users\\mherr\\Desktop\\CAMP6W\\OBRAS\\MEDIA_LU')
     excel(archivos(path), path)
-    print(archivos(path))
 
 
 if __name__ == "__main__":
