@@ -1,25 +1,17 @@
+from pathlib import *
 import os
-
+import xlwings as xw
 from dbfread import DBF
 
-# Cambiar directorio por carpeta con dbf
-directorio = 'C:\\Users\\mherr\\Desktop\\CAMP6W\\OBRAS\\CAJONDEP'
+
+def dbf_reader(path):
+    table = DBF(path, encoding="850")
+    return table
 
 
-def convertir(nombre):
-    """ Aqui se pone la explicacion"""
-    # Convertir toma los datos del dbf seleccionado y los convierte a un data frame
-    # para exportarlo a una carpeta con los csv
-    carpeta = "csv"
-    dbf = DBF(str(nombre), encoding='1252')
-    if not os.path.exists(carpeta):
-        os.makedirs(carpeta)
-
-# archivos toma una lista de los archivos que estan en el directorio de la obra
-# y si su terminación es dbf los convierte a dataframe
-def archivos():
+def archivos(path):
     lista = []
-    archivos = os.listdir()
+    archivos = os.listdir(path)
     for i in range(len(archivos)):
         if "DBF" == archivos[i][-3:]:
             lista.append(archivos[i])
@@ -27,12 +19,25 @@ def archivos():
             pass
     return lista
 
-#main conecta los archivos del directorio a la función convertir
+
+def excel(archivos, path):
+    wb = xw.Book()
+    # wb.save("C:\\Users\\mherr\\Desktop\\CAMP6W\\OBRAS\\MEDIA_LU\\CSV.xlsx")
+    for x in range(len(archivos)):
+        strcol = "A"
+        strng = 2
+        hoja = wb.sheets.add(archivos[x])
+        table = dbf_reader(path / archivos[x])
+        hoja.range("A1").value = table.field_names
+        for record in table:
+            hoja.range(strcol + str(strng)).value = list(record.values())
+            strng += 1
+        del strcol, strng
+
+
 def main():
-    os.chdir(directorio)
-    lista = archivos()
-    for i in range(0,len(lista)):
-        convertir(lista[i])
+    path = PureWindowsPath('C:\\Users\\mherr\\Desktop\\CAMP6W\\OBRAS\\MEDIA_LU')
+    excel(archivos(path), path)
 
 
 if __name__ == "__main__":
