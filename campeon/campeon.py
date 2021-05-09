@@ -1,39 +1,45 @@
+from pathlib import *
 import os
-import csv
+import xlwings as xw
 from dbfread import DBF
-# Cambiar directorio por carpeta con dbf
-directorio = 'C:\\Users\\mherr\\Desktop\\CAMP6W\\OBRAS\\PRECIOSU'
-def dbf_to_csv(dbf_table_pth):
-    carpeta = "csv"
-    if not os.path.exists(carpeta):
-        os.makedirs(carpeta)
-    csv_fn = directorio + "\\" + carpeta + "\\" + dbf_table_pth[:-4] + ".csv"
-    table = DBF(dbf_table_pth, encoding="850", ignore_missing_memofile="true")
-    with open(csv_fn, 'w', newline = '') as f:
-        writer = csv.writer(f)
-        writer.writerow(table.field_names)
-        for record in table:
-            writer.writerow(list(record.values()))
-    return csv_fn
-# archivos toma una lista de los archivos que estan en el directorio de la obra
-# y si su terminación es dbf los convierte a dataframe
-def archivos():
+
+
+def dbf_reader(path):
+    table = DBF(path, encoding="850")
+    return table
+
+
+def archivos(path):
     lista = []
-    archivos = os.listdir()
+    archivos = os.listdir(path)
     for i in range(len(archivos)):
         if "DBF" == archivos[i][-3:]:
             lista.append(archivos[i])
         else:
             pass
     return lista
-#main conecta los archivos del directorio a la función convertir
+
+
+def excel(archivos, path):
+    wb = xw.Book()
+    # wb.save("C:\\Users\\mherr\\Desktop\\CAMP6W\\OBRAS\\MEDIA_LU\\CSV.xlsx")
+    for x in range(len(archivos)):
+        strcol = "A"
+        strng = 2
+        hoja = wb.sheets.add(archivos[x])
+        table = dbf_reader(path / archivos[x])
+        hoja.range("A1").value = table.field_names
+        for record in table:
+            hoja.range(strcol + str(strng)).value = list(record.values())
+            strng += 1
+        del strcol, strng
+
+
 def main():
-    os.chdir(directorio)
-    lista = archivos()
-    for i in range(0,len(lista)):
-        try:
-            dbf_to_csv(lista[i])
-        except ValueError:
-            pass
+    path = PureWindowsPath('C:\\Users\\mherr\\Desktop\\CAMP6W\\OBRAS\\MEDIA_LU')
+    excel(archivos(path), path)
+    print(archivos(path))
+
+
 if __name__ == "__main__":
     main()
